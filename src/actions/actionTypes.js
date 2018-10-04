@@ -1,0 +1,2 @@
+export const CRIAR_ALUNO = 'CRIAR_ALUNO';
+export const ALTERAR_ALUNO = 'ALTERAR_ALUNO';

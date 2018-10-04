@@ -1,17 +1,14 @@
+import * as actionTypes from './actionTypes'
+
 export const criarAluno = () => {
     return {
-        type: 'CRIAR_ALUNO'
+        type: actionTypes.CRIAR_ALUNO
     }
 }
 
 export const alterarDadoAluno = (event) => {
     return {
-        type: 'ALTERAR_ALUNO',
+        type: actionTypes.ALTERAR_ALUNO,
         event: event
     }
 } 
-
-export default {
-    criarAluno,
-    alterarDadoAluno
-}
