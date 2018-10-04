@@ -10,3 +10,8 @@ export const alterarDadoAluno = (event) => {
         event: event
     }
 } 
+
+export default {
+    criarAluno,
+    alterarDadoAluno
+}

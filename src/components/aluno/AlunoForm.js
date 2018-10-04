@@ -1,18 +1,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {criarAluno, alterarDadoAluno} from '../../actions/alunoAction';
+import {bindActionCreators} from 'redux';
+import actions from '../../actions/alunoAction';
 
 class AlunoForm extends Component{
-    constructor(props){
-        super(props);
-    }
 
     aluno = (course, i) => <h1 key={i}>{course.nome}</h1>;
 
     render() {
         return <div>
-            <input name="nome" onChange={this.props.alunoAlterado} value={this.props.alunos.alunoSelecionado.nome}/>
-            <button onClick={this.props.onSave}>Salvar</button>
+            <input name="nome" onChange={this.props.actions.alterarDadoAluno} value={this.props.alunos.alunoSelecionado.nome}/>
+            <button onClick={this.props.actions.criarAluno}>Salvar</button>
             <button onClick={this.onSave}>Cancelar</button>
 
             {this.props.alunos.data.map(this.aluno)}            
@@ -22,12 +20,7 @@ class AlunoForm extends Component{
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSave: () => {
-            dispatch(criarAluno());
-        },
-        alunoAlterado: (evento) => {
-            dispatch(alterarDadoAluno(evento));
-        }
+        actions: bindActionCreators(actions, dispatch)
     }
 }
 
