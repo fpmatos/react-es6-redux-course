@@ -1,2 +1,3 @@
 export const CRIAR_ALUNO = 'CRIAR_ALUNO';
 export const ALTERAR_ALUNO = 'ALTERAR_ALUNO';
+export const CARREGAR_ALUNOS = 'CARREGAR_ALUNOS';

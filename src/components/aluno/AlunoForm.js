@@ -5,13 +5,17 @@ import * as actions from '../../actions/alunoActions';
 
 class AlunoForm extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.alunoAlterado = this.alunoAlterado.bind(this);
         this.salvar = this.salvar.bind(this);
     }
 
-    aluno = (course, i) => <h1 key={i}>{course.nome}</h1>;
+    componentDidMount(){
+        
+    }
+
+    aluno = (course, i) => <h1 key={i}>{course.name}</h1>;
 
     alunoAlterado(event){
         this.props.dispatch(actions.alterarDadoAluno(event));
@@ -23,7 +27,7 @@ class AlunoForm extends Component{
 
     render() {
         return <div>
-            <input name="nome" onChange={this.alunoAlterado} value={this.props.alunos.alunoSelecionado.nome}/>
+            <input name="name" onChange={this.alunoAlterado} value={this.props.alunos.alunoSelecionado.name}/>
             <button onClick={this.salvar}>Salvar</button>
             <button onClick={this.onSave}>Cancelar</button>
 
