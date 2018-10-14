@@ -1,0 +1,269 @@
+Building Application with React and Redux with ES6:
+https://app.pluralsight.com/player?course=react-redux-react-router-es6&author=cory-house&name=react-redux-react-router-es6-m1&clip=0&mode=live
+
+Projeto Exemplo Cory House:
+https://github.com/coryhouse/pluralsight-redux-app-used-to-build-script/blob/master/src/components/course/ManageCoursePage.js
+https://github.com/coryhouse/react-slingshot
+
+Concluir:
+Environment Setup
+
+
+
+projeto exercicio: 
+https://github.com/fpmatos/reactenvironment
+
+Environment Setup:
+
+Redux
+ES6 with Babel
+React Router
+Webpack
+npm scripts
+ESLint
+Mocha, React Test Utils and Enzyme
+VS Code
+
+
+
+
+
+------------------------------------------------------------------------
+Por que Redux?
+
+- Mais estrelas em curto tempo do que Flux
+- Desenvolvedor foi agregado também ao Facebook
+- Menos verboso, mais rápido que Flux
+
+
+
+------------------------------------------------------------------------
+Stateless or Class components?
+
+Sempre usar Stateless, usar components Class apenas quando:
+
+Class Component:
+
+	. Work with Dom Refs
+	. Work with local states
+	. Using Lifecicle method hooks
+	. Child Functions (porque em um stateless funcion, a cada Render, é criado uma instancia dessas funções filhas)
+	. 
+
+
+
+--------------------------------------------------------------------------------
+Container x Presentation Components:
+
+Container Component:
+----------------------------
+É como se fosse o backend do frontend (presentation component)
+São Statefull: Controla estado e ações para os filhos, Sem Markups
+Com Redux, são geralmente criados usando a função de conexão do Redux. redux.Connect
+Geralmente colocados separados dos componentes de apresentação, mas é legal quando são colocados por Features (mesma página)
+Passa dados e ações abaixo (para presentation components)
+Conhece Redux
+
+
+Presentation:
+----------------------------
+Com markups
+Sem estado e sem lógica (burros)
+Recebe Data, actions e Props de Container Components
+Não conhece Redux
+Mais reutilizavel, pois dependem apenas de props para exibir a interface e não tem dependencia do resto do app.
+Geralmente funções
+
+
+São chamados de:
+----------------------------
+Contaner x Presentation
+Smart x Dumb
+Stateful x Stateless
+Controller x View
+
+
+
+
+---------------------------------------------------------------------------------
+3 Princípios de Redux:
+
+1. Onde Immutable Store
+2. Actions Trigger Changes
+3. Reducers update states
+
+
+---------------------------
+Route:
+
+Chamar children Parent component:
+
+<Route path="/" component={App}>
+	<IndexRoute component={HomePage} />
+	<Route path="about" coponent={AboutPage}/>
+</Route>
+
+
+
+
+
+Redux Flow (Fluxo React)
+---------------------------------
+
+Acao - Reducer (altera estado de Redux Store) - Renderiza os componentes que utilizam estado dessa loja
+
+Store (Immutable)
+-------
+
+Actions {type: 'click-item', ...}
+
+Reducers: (Precisa retornar realmente um novo objeto, por ter o estado imutável, ex.: usar Object.assing (precisa incluir babel-polyfill))
+
+Por que o estado do Redux é imutável:
+
+	1. Apenas um local retorna novo estado para Redux Store (Reducers)
+	2. Redux não precisa checar alteração do estado que é um processo caro, já que sempre existe um novo objeto (percorrer o DOM para um novo Render é mais barato.). Redux apenas compara se o objeto retornado é o mesmo da memória, se não, chama os listeners.
+	3. Undo/Rendo, debugging, TUrn off Individual Actions, play interactions back
+	4. Forma de fazer merge em objetos:
+		ES6: Object.assign, Spread operator.
+		ES5: Lodash merge, Lodash extend, Object-assign
+	5. Garantindo a imutabilidade do estado:
+		library: middleware redux-immutable-state-invariant (usar apenas em desenvolvimento)
+			usando: import {createStore, applyMiddleware} from 'redux'
+				import redux-immutable-state-in	variant from 'redux-immutable-state-invariant'
+			const store = createStore(reducerRoot, initialState, applyMiddleware(redux-immutable-state-invariant));
+
+		library: Immutable.js (construida por Facebook, utilizada programaticamente)
+
+
+	
+Sobre Reducers:
+----
+
+O que ele não pode fazer:
+
+	1. Alterar argumentos
+	2. Fazer coisas que podem ter efeitos colaterais, como chamada de API, etc
+	3. Chamar funções não puras
+	4. Apenas um Store, mas pode ter vários reducers
+	5. Multiplos Redux Stores é possíveis e utilizado em casos raros, mas é aconselhavem utilizar apenas um Redux Store
+	6. Todos os reducers são chamados, caso ocorra algum dispatch, mas apenas o responsável de acordo com o tipo, retornaria um novo estado, caso não seja o responsável, ele retornaria o mesmo objeto passado, fazendo com que o Store não detecte como alterado.
+	7. (Reducer Composition) Informações podem ser manipuladas em mais de um reducer ao mesmo tempo, para a mesma Action. Ou seja, ação pode ser tratada por Todos Reducers, alguns ou nenhum
+
+
+
+=====================================================================
+react-redux Intruduction
+
+	Provider: Atacha a aplicação ao Redux Store
+	Connect: Cria um Container Component. Define quais partes do Redux Store queremos conectar ao componente (connect(mapStateToProps, mapDispatchToProps, component)). Todos os parametros são opcionais.
+		mapStateToProps: 
+			Identifica qual estado eu quero disponibilizar como props
+			Toda vez que Redux Store é atualizado, é chamado mapStateToProps.
+			Retorna um objeto que será props de Component Container
+			Reselect: Memoriza o estado já retornado anteriormente e não chama a função novamente, economizando processamento, ainda mais quando o processamento é caro, como filtro em listas, etc
+		mapDispatchToProps:
+			Quando é utilizado como parametro do react-redux.connect, a propriedade 'dispatch' não é mais injetada
+			Identifica quais funções (ações) quero disponibilizar via Props, muito semelhante a mapStateToProps. 
+			Três formas de chamar o dispatch:
+				1. Usando dispatch diretamente dos componentes filhos, já que o connect disponibliza a função dispatch como props. Ex.:
+					this.props.dispatch(loadCourses())   // ruim pois os componentes filhos precisam conhecer sobre Redux.
+				2. Wrap manual (usando mapDispatchToProps e mapeando as ações, retornando um Json) 
+					// chamar ação do componente: this.props.acaox()
+				3. usando mapDispatchToProps, como a função do Redux: bindActionCreator(actions, dispatch)	 //menos redundante
+
+	Entendendo a troca de mensagens entre os pedaços de Redux:
+
+		. Alguém efetua alguma ação do Dom
+		. 'Action' é chamado e é disparado uma ação para 'reducers' atualizar o 'Redux State'
+		. 'Reducer': recebe o estado corrente e qual ação precisa ser efetuada para retornar um novo estado ou o mesmo.
+		. Store: Caso estado novo, todos os componentes conectados serão avisados.
+		.React-redux: É avisado sobre o novo estado e atualiza a UI apenas quando realmente necessário
+		.Redux: Novo dado foi passado via props, então irá atualizar a UI para refletir isso.
+				
+			
+			
+
+================================================================================================
+Redux Thunk - torna possível o carregamento de solicitações assincronas para os reducers
+
+> npm i redux-thunk -s
+
+import {applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+
+export const configureStore = (initialState) => {
+    return createStore(
+        rootReducer, 
+        initialState,
+        applyMiddleware(thunk)
+    );
+}
+
+export const carregarAlunos = () => {
+    return (dispatch) => {
+        return alunosApi.getAll().then(data => {
+            dispatch(carregarAlunosSucesso(data));
+        }).catch(err => {
+            throw(err);
+        });
+    }
+}
+
+
+
+Mock API
+
+
+============================================================================================================
+async writes in redux
+
+componentWillReceiveProps: (faz parte de reactLifeCicle)
+componentWillReceiveProps(nextProps){
+	
+}
+
+
+mapStateToProps(state, prevProps){
+	...
+}
+
+
+Component.defaultProps = {
+	prop1: 10,
+	prop2: 17
+}
+
+
+
+
+==========================================================================================================
+Testing Redux:
+
+1. Testar Actions com Thunks (quando as ações são disparadas dentro de funções assincronas, se não, pode-se executar o teste chamando a função diretamente, sem dispatch)
+Exemplo: https://github.com/coryhouse/pluralsight-redux-app-used-to-build-script/blob/master/src/actions/courseActions.test.js
+
+		- Usar: 
+			thunk (import thunk from 'redux-thunk';)
+			nock (mock http calls) (import nock from 'nock';)
+		 	configureMockStore (import configureMockStore from 'redux-mock-store';)
+
+
+2. Testar Store:
+https://app.pluralsight.com/player?course=react-redux-react-router-es6&author=cory-house&name=react-redux-react-router-es6-m13&clip=6&mode=live
+
+3. Reducers:
+Apenas testar a função passando os parametros
+
+4. Redux Connected Component
+ex.:
+
+export class ComponenteX extends React.Component {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ComponenteX);
+
+// para testar:
+import {ComponentX} from './ComponentX' 
+		
