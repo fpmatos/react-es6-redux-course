@@ -1,18 +1,12 @@
 import * as actionTypes from './actionTypes'
 import alunosApi from "../api/mockAlunosApi";
 
-export const criarAluno = () => {
+export const criarAluno = (aluno) => {
     return {
-        type: actionTypes.CRIAR_ALUNO
+        type: actionTypes.CRIAR_ALUNO,
+        aluno
     }
 }
-
-export const alterarDadoAluno = (event) => {
-    return {
-        type: actionTypes.ALTERAR_ALUNO,
-        event: event
-    }
-} 
 
 export const carregarAlunosSucesso = (alunos) => {
     return {
